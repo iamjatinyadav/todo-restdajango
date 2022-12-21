@@ -2,7 +2,7 @@ from django.contrib.auth import login
 from django.shortcuts import render
 from rest_framework import viewsets, generics, views, status
 from rest_framework.response import Response
-
+from rest_framework.filters import SearchFilter
 from .models import *
 from .serializers import *
 from rest_framework import permissions
@@ -12,7 +12,7 @@ class TodoItemsView(viewsets.ModelViewSet):
     queryset = TodoItems.objects.all()
     serializer_class = TodoItemsSerializers
     permission_classes = [permissions.IsAuthenticated]
-
+    # search with 0,1 and 2
     search_fields = (
         '^status',
     )

@@ -1,9 +1,7 @@
 from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
-# Create your models here.
-# from django.contrib.auth.models import PermissionsMixin
-
+from django.utils.translation import gettext_lazy as _
 import uuid
 
 
@@ -86,9 +84,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class TodoItems(models.Model):
     class Status(models.IntegerChoices):
-        NotStarted = 0
-        OnGoing = 1
-        Completed = 2
+        NotStarted = 0, _("NotStarted")
+        OnGoing = 1, _("OnGoing")
+        Completed = 2, _("Completed")
+
     name = models.CharField(max_length=255)
     Description = models.TextField(max_length=300, null=True, blank=True)
     user = models.ForeignKey('User', on_delete=models.CASCADE, related_name="todoitems")
