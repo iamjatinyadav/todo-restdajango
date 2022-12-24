@@ -1,8 +1,8 @@
 from django.contrib.auth import login
 from django.shortcuts import render
-from rest_framework import viewsets, generics, views, status
+from rest_framework import viewsets, generics, views, status, filters
 from rest_framework.response import Response
-from rest_framework.filters import SearchFilter
+from rest_framework import filters
 from .models import *
 from .serializers import *
 from rest_framework import permissions
@@ -12,6 +12,8 @@ class TodoItemsView(viewsets.ModelViewSet):
     queryset = TodoItems.objects.all()
     serializer_class = TodoItemsSerializers
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = (filters.SearchFilter,)
+
     # search with 0,1 and 2
     search_fields = (
         '^status',
@@ -33,26 +35,27 @@ class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
 
-
-class LoginView(generics.CreateAPIView):
-    permission_classes = (permissions.AllowAny,)
-    serializer_class = LoginSerializer
-
-    def post(self, request):
-        serializer = self.get_serializer(data=self.request.data,
-            context={ 'request': self.request })
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        login(request, user)
-        return Response(None, status=status.HTTP_202_ACCEPTED)
+#
+# class LoginView(generics.CreateAPIView):
+#     permission_classes = (permissions.AllowAny,)
+#     serializer_class = LoginSerializer
+#
+#     def post(self, request):
+#         serializer = self.get_serializer(data=self.request.data,
+#                                          context={'request': self.request})
+#         serializer.is_valid(raise_exception=True)
+#         user = serializer.validated_data['user']
+#         login(request, user)
+#         return Response(None, status=status.HTTP_202_ACCEPTED)
 
 
 class ChangePasswordView(generics.UpdateAPIView):
-
     queryset = User.objects.all()
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = ChangePasswordSerializer
 
     def get_object(self, queryset=None):
         return self.request.user
+
+
 
